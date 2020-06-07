@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <style type="text/css">
+      .rgba-gradient {
+        background: -webkit-linear-gradient(45deg, rgba(228, 101, 47, 0.26), rgba(145, 134, 129, 0.26) 100%);
+        background: -webkit-gradient(linear, 45deg, from(rgba(0, 0, 0, 0.7), rgba(72, 15, 144, 0.4) 100%));
+        background: linear-gradient(to 45deg, rgba(0, 0, 0, 0.7), rgba(72, 15, 144, 0.4) 100%);
+      }
+      .spinner {
+        margin: 100px auto;
+        width: 50px;
+        height: 60px;
+        text-align: center;
+        font-size: 10px;
+      }
+      
+      .spinner > div {
+        background-color: #67CF22;
+        height: 100%;
+        width: 6px;
+        display: inline-block;
+        
+        -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+        animation: stretchdelay 1.2s infinite ease-in-out;
+      }
+      
+      .spinner .rect2 {
+        -webkit-animation-delay: -1.1s;
+        animation-delay: -1.1s;
+      }
+      
+      .spinner .rect3 {
+        -webkit-animation-delay: -1.0s;
+        animation-delay: -1.0s;
+      }
+      
+      .spinner .rect4 {
+        -webkit-animation-delay: -0.9s;
+        animation-delay: -0.9s;
+      }
+      
+      .spinner .rect5 {
+        -webkit-animation-delay: -0.8s;
+        animation-delay: -0.8s;
+      }
+      
+      @-webkit-keyframes stretchdelay {
+        0%, 40%, 100% { -webkit-transform: scaleY(0.4) } 
+        20% { -webkit-transform: scaleY(1.0) }
+      }
+      
+      @keyframes stretchdelay {
+        0%, 40%, 100% {
+          transform: scaleY(0.4);
+          -webkit-transform: scaleY(0.4);
+        }  20% {
+          transform: scaleY(1.0);
+          -webkit-transform: scaleY(1.0);
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+      integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <title>{% block title %} Sandbox{% endblock %}</title>
+  </head>
+
+  <body class="rgba-gradient">
+    <header>
+      <nav class="navbar fixed-top scrolling-navbar navbar-expand-sm" style="background: transparent !important;">
+        <div class="container">
+          <a class="navbar-brand" href="{% url 'queryPage:query' %}">
+            <span class="h3 text-secondary">Self-Learner</span>
+          </a>
+          <button
+            class="navbar-toggler"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+          >
+          <span class="navbar-toggler-icon">   
+            <i class="fa fa-navicon " style="color:#6c757d; font-size:28px;"></i>
+        </span>
+            <!-- <span class="navbar-toggler-icon"></span> -->
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a
+                  class="nav-link font-weight-bold text-secondary"
+                  href="{% url 'queryPage:home' %}"
+                  >Home</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link font-weight-bold text-secondary"
+                  href="{% url 'queryPage:query' %}"
+                  >Query Page</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main>
+        <div class="jumbotron jumbotron-fluid text-center" style="background-color: transparent">
+          <div class="container">
+            {% block content %}
+            <h1 class="display-4 font-weight-bold my-5">
+              SELF-LEARNER<br />WELCOME
+            </h1>
+            <p class="text-monospace my-5 h3">Exactly What You Need</p>
+            <p class="lead my-5">
+              (Description)<br />This website has been proudly providing high
+              quality products and services to the To learn more, simply press the
+              botton start.
+            </p>
+            <a href="{% url 'queryPage:query' %}" class="btn btn-light"
+              ><spnn class="text-monospace">Start</spnn>
+            </a>
+            {% endblock %}
+          </div>
+      </div>  
+    </main>
+    <footer>
+      <div class="row text-center text-light ">
+        <div class="container">
+          <div class="footer-content text-secondary">
+            <div class="text-uppercase font-weight-bold my-3">
+              <p>newsletter signup</p>
+              <p>Get Cool Stuff! We hate spam!</p>
+            </div>
+            <form action="#" method="post">
+              <div class="input-group w-25 mx-auto mb-3">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Enter Your Email..."
+                />
+                <button type="submit" class="input-group-append submit-icon">
+                  <i class="fa fa-paper-plane fa-lg"></i>
+                </button>
+              </div>
+            </form>
+            <div class="footer-social">
+              <ul class="list-inline">
+                <li class="list-inline-item">
+                  <a href="#"><i class="fa fa-thumbs-up fa-3x"></i></a>
+                </li>
+                <li class="list-inline-item" data-wow-delay="0.3s">
+                  <a href="#"><i class="fa fa-twitter fa-3x"></i></a>
+                </li>
+                <li class="list-inline-item" data-wow-delay="0.6s">
+                  <a href="#"><i class="fa fa-skype fa-3x"></i></a>
+                </li>
+                <li class="list-inline-item" data-wow-delay="0.9s">
+                  <a href="#"><i class="fa fa-dribbble fa-3x"></i></a>
+                </li>
+                <li class="list-inline-item" data-wow-delay="1.2s">
+                  <a href="#"><i class="fa fa-youtube fa-3x"></i></a>
+                </li>
+              </ul>
+            </div>
+            <p>
+              Copyright &copy;<a
+                target="_blank"
+                href="http://www.freemoban.com/"
+              ></a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+
+    <!-- ./container -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+      integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+      crossorigin="anonymous"
+    ></script>
+    {% block js %}
+    {% endblock %}
+  </body>
+</html>
