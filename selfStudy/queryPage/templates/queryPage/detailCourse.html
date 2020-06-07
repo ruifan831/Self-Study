@@ -1,0 +1,152 @@
+{% extends 'queryPage/base.html'%}}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+<div class="row my-5">
+  <div class="col-6">
+    <img id="course_img" class="img-fluid rounded" src="https://img-a.udemycdn.com/course/480x270/1362070_b9a1_2.jpg" alt="Responsive image"/>
+  </div>
+  <div class="col-6">
+    <div class="text-left">
+      <blockquote class="blockquote page-header mb-1">
+          <div class="mb-2">
+              <a class="h3 text-left lead text-monospace font-weight-bold" id="title">
+          Example page header
+        </a>
+          </div>
+        <span class="my-rating d-inline align-bottom"></span>
+        <span id="rating"></span>
+        <span >
+            <small id="subscribers" class="align-top"></small>
+            <small class="align-top">students enrolled</small>
+        </span>
+        
+        <footer class="blockquote-footer text-right mr-1">
+          Instructor:
+          <cite title="Source Title" id="instructor"></cite>
+        </footer>
+      </blockquote>
+      <div>
+        <small class="mb-2 mr-3 text-monospace text-capitalize"
+          >Instructional Level:</small
+        >
+        <small id="instruction_level"></small>
+      </div>
+      <small id="description">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas tempore provident itaque doloremque sint esse quos quibusdam reprehenderit, ab aut explicabo vel? Itaque velit officia eaque error excepturi alias impedit.</small>
+    </div>
+  </div>
+</div>
+<div style="background-color: transparent;" class="text-left">
+    <span class="mb-2 mr-3 text-monospace text-capitalize"
+      >Required Knowledge Point:</span
+    >
+    <ol class="breadcrumb" style="background-color: transparent;" id="kp_re"></ol>
+  </div>
+<div style="background-color: transparent;" class="text-left">
+  <span class="mb-2 mr-3 text-monospace text-capitalize"
+    >Knowledge Point:</span
+  >
+  <ol class="breadcrumb" style="background-color: transparent;" id="kp"></ol>
+</div>
+<div style="background-color: transparent;" class="text-left">
+  <span class="mb-2 mr-3 text-monospace text-capitalize">SubCategory:</span>
+  <ol
+    class="breadcrumb"
+    style="background-color: transparent;"
+    id="subcategory"
+  ></ol>
+</div>
+<div style="background-color: transparent;" class="text-left">
+  <span class="mb-2 mr-3 text-monospace text-capitalize">Main Category:</span>
+  <ol
+    class="breadcrumb"
+    style="background-color: transparent;"
+    id="mainCategory"
+  ></ol>
+</div>
+
+{% endblock %}
+{% block js %}
+<script
+  src="/static/queryPage/js/jquery.star-rating-svg.js"
+  type="text/javascript"
+></script>
+<link
+  href="/static/queryPage/css/star-rating-svg.css"
+  media="all"
+  rel="stylesheet"
+  type="text/css"
+/>
+<script>
+  $(document).ready(function () {
+    var url = location.href;
+    var paraString = url.substring(url.indexOf("?") + 1, url.length);
+    $.getJSON("{% url 'queryPage:detailAPI' %}" + "?" + paraString, function (
+      data
+    ) {
+      console.log(data);
+      $("#title").attr("href", data.course_url[0]);
+      $("#title").text(data.course[0]);
+      $("#instructor").append(
+        "<a class='text-dark' id='instructor_url' class='text-info'>" +
+          data.instructor[0] +
+          "</a>"
+      );
+      $(".my-rating").starRating({
+        starSize: 20,
+        readOnly: true,
+        ratedColor:'crimson',
+        initialRating: data.rating[0],
+      });
+      var rating = Number(data.rating[0])
+      $("#rating").append('<small class="mx-3 align-top">Rating: '+rating.toFixed(2)+'</small>')
+      $("#subscribers").text(data.num_sub[0]);
+      $("#instruction_level").text(data.instruction_level[0]);
+      $("#instructor_url").attr("href", data.instructor_url[0]);
+      $("#description").text(data.des[0]);
+      for (x of data.kp) {
+        $("#kp").append('<li class="breadcrumb-item">' + x + "</li>");
+      }
+      for (x of data.subcate) {
+        $("#subcategory").append('<li class="breadcrumb-item">' + x + "</li>");
+      }
+      for (x of data.main) {
+        $("#mainCategory").append('<li class="breadcrumb-item">' + x + "</li>");
+      }
+      if (data.kp_re.length >0){
+        for (x of data.kp_re) {
+          $("#kp_re").append('<li class="breadcrumb-item">' + x + "</li>");
+        }
+      } else{
+        $("#kp_re").parent().remove()
+      }
+      
+      console.log(data.img_url[0])
+      if (data.img_url[0]){
+          $("#course_img").attr('src',data.img_url[0]);
+
+      }
+
+    });
+    $("ol").on("mouseenter", "li", function () {
+      //绑定鼠标进入事件
+      $(this).attr("class", function (i, origValue) {
+        return origValue + " font-weight-bold text-primary";
+      });
+      $(this).css("cursor", "Pointer");
+    });
+    $("ol").on("mouseleave", "li", function () {
+      //绑定鼠标划出事件
+      $(this).attr("class", "breadcrumb-item");
+    });
+    $("ol").on("click", "li", function () {
+      var keyword =$(this).text()
+      var searField = $(this).parent().prev().text().slice(0,-1)
+      console.log(searField)
+      $(location).attr(
+        "href",
+        "{% url 'queryPage:search' %}?searchInput=" + keyword.replace(" ","+")+"&searchField=" +searField.replace(" ","+")
+      );
+    });
+  });
+</script>
+{% endblock %}
