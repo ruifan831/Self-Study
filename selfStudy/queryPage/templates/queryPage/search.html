@@ -1,0 +1,114 @@
+{% extends 'queryPage/base.html'%} 
+{% block title %}Search Result{% endblock %} 
+{% block content %}
+<span class="float-right"><a class="btn text-monospace btn-secondary" href="{% url 'queryPage:query' %}" >Back</a></span>
+<h1 class="display-3 my-4 text-capitalize">{{keyword}}</h1>
+
+
+<!-- <table class="table table-dark">
+  <thead>
+      <tr>
+          <th>#</th>
+          {% for column in columns %}
+          <th>{{column}}</th>
+          {% endfor %}
+      </tr>
+  </thead>
+  <tbody id='table_body'>
+  </tbody>
+</table> -->
+<ul class="list-unstyled" id="courses">
+  <div class="spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+</ul>
+<script
+      src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"
+    ></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+  integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+  integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+  crossorigin="anonymous"
+></script>
+<script>
+  $(document).ready(function () {
+    $('#courses').on('mouseenter', 'div', function() {//绑定鼠标进入事件
+      $(this).attr('class',function (i, origValue){
+        return origValue+" font-weight-bold text-primary";
+      });
+      $(this).css("cursor","Pointer");
+    });
+    $('#courses').on('mouseleave', 'div', function() {//绑定鼠标划出事件
+      $(this).attr('class',"media-body align-self-center");
+    });
+  $("#courses").on("click","div",function(){
+    var content_text= $(this).parent();
+    content_text=content_text.attr("id")
+    console.log(content_text)
+    $(location).attr("href","/detail/?course="+content_text);
+    });
+ 
+    var curPage = 0
+    var url = location.href; 
+    var paraString = url.substring(url.indexOf("?")+1,url.length).split("&"); 
+    var paraObj = {}
+    for (x of paraString) {
+      var temp = x.split("=")
+      paraObj[temp[0]]=temp[1];
+    };
+    $.getJSON("{% url 'queryPage:searchAPI' %}"+'?p='+curPage+'&searchInput='+paraObj["searchInput"]+'&searchField='+paraObj['searchField'], function(data) {
+      $(".spinner").hide()
+      for (x of data){
+        var course_id= x[0].substring(x[0].indexOf("#")+1,x[0].length);
+        var course_title = x[1];
+        var course_img = x[2];
+        if (!course_img){
+          course_img="https://img-a.udemycdn.com/course/480x270/1362070_b9a1_2.jpg"
+        }
+        var strs= '<li class="media my-3" id='+course_id+'>'+'<img class="mr-3 align-self-center rounded" src="'+course_img+'" width="240" height="135">'+'<div class="media-body align-self-center"><h5 class="ml-4 text-left">'+course_title+'</h5></div>'+'</li>'
+        $("#courses").append(strs)
+        }
+      });
+    $(window).scroll(function () {
+      var scrollTop = $(this).scrollTop();//滚动条滚动的距离
+      var scrollHeight = $(document).height();//整个html页面高度
+      var windowHeight = $(this).height();//可视页面的高度
+      if (scrollTop + windowHeight == scrollHeight) {
+        var url = location.href; 
+        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&"); 
+        var paraObj = {}
+        for (x of paraString) {
+          var temp = x.split("=")
+          paraObj[temp[0]]=temp[1];
+        };
+        curPage+=1
+        // console.log(scrollHeight);
+        $.getJSON("{% url 'queryPage:searchAPI' %}"+'?p='+curPage+'&searchInput='+paraObj["searchInput"]+'&searchField='+paraObj['searchField'], function(data) {
+          for (x of data){
+            var course_id= x[0].substring(x[0].indexOf("#")+1,x[0].length);
+            var course_title = x[1];
+            var course_img = x[2];
+            if (!course_img){
+              course_img="https://img-a.udemycdn.com/course/480x270/1362070_b9a1_2.jpg"
+            }
+            var strs= '<li class="media my-3" id='+course_id+'>'+'<img class="mr-3 align-self-center rounded" src="'+course_img+'" width="240" height="135">'+'<div class="media-body align-self-center"><h5 class="ml-4 text-left">'+course_title+'</h5></div>'+'</li>'
+            $("#courses").append(strs)
+          }
+        });
+        };
+      });
+      })
+</script>
+
+{% endblock %}
