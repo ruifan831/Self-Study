@@ -1,0 +1,89 @@
+{% extends 'queryPage/base.html'%}}
+{% block title %}{{title}}{% endblock %} 
+{% block content %}
+<blockquote class="blockquote page-header mb-3">
+    <h3 class="text-center text-monospace font-weight-bold text-capitalize" id="title">
+        {{title}}
+    </h3>
+</blockquote>
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Knowledge Point</th>
+        </tr>
+    </thead>
+    <tbody id='table_body'>
+    </tbody>
+  </table>
+
+<script
+      src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"
+    ></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+  integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+  integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+  crossorigin="anonymous"
+></script>
+<script>
+  $(document).ready(function () {
+    var cur_page=0
+    var url = location.href; 
+    var paraString = url.substring(url.indexOf("?")+1,url.length); 
+    console.log(paraString);
+    $.getJSON("{% url 'queryPage:detailAPI' %}"+'?p='+cur_page+"&"+paraString, function(data) {
+        for (x of data){
+            var course_id= x[0];
+            var row= "<tr><th scope='row'>"+($("#table_body").find("tr").length +1);
+            row +="<td>"+x+"</td>";
+            row += "</th>"
+            $("#table_body").append(row)
+        }
+    });
+    $('.table').on('mouseenter', 'td', function() {//绑定鼠标进入事件
+      $(this).attr('class',"font-weight-bold text-primary");
+      $(this).css("cursor","Pointer");
+    });
+    $('.table').on('mouseleave', 'td', function() {//绑定鼠标划出事件
+      $(this).attr('class',"");
+    });
+    $(".table").on("click","td",function(){
+        var tdSeq = $(this).parent().find("td").index($(this)[0]);
+        var content_text= $(this).text();
+        switch (tdSeq){
+            case 0:
+                $(location).attr("href","/detail/?kp="+content_text);
+                break;
+                }
+        });
+ 
+      $(window).scroll(function () {
+        var scrollTop = $(this).scrollTop();//滚动条滚动的距离
+        var scrollHeight = $(document).height();//整个html页面高度
+        var windowHeight = $(this).height();//可视页面的高度
+        if (scrollTop + windowHeight == scrollHeight) {
+            cur_page+=1;
+            $.getJSON("{% url 'queryPage:detailAPI' %}"+'?p='+cur_page+"&"+paraString, function(data) {
+                for (x of data){
+                var course_id= x[0];
+                var row= "<tr><th scope='row'>"+($("#table_body").find("tr").length +1);
+                row +="<td>"+x+"</td>";
+                row += "</th>"
+                $("#table_body").append(row)
+                }
+            });
+        }
+      })
+
+  })
+</script>
+
+
+{% endblock %}
